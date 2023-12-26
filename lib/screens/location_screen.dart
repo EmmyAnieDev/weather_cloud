@@ -166,7 +166,7 @@ class _LocationScreenState extends State<LocationScreen> {
                   Text(
                     weatherIcon ??
                         'Unknown', // Use 'Unknown' if weatherIcon is null
-                    style: TextStyle(fontSize: 125.sp),
+                    style: TextStyle(fontSize: 126.sp),
                   ),
                   Text(
                     '$temperature°C',
