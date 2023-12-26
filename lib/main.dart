@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:weather_cloud/screens/loading_screen.dart';
-import 'package:weather_cloud/screens/location_screen.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
