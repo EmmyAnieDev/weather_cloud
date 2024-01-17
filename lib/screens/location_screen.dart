@@ -157,172 +157,173 @@ class _LocationScreenState extends State<LocationScreen> {
         child: Padding(
           padding: REdgeInsets.only(top: 20, bottom: 5, left: 20, right: 20).r,
           child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text('${cityName is String ? cityName : 'Invalid City Name'}',
-                      style: kTextStyle10),
-                  Text(
-                    weatherIcon ??
-                        'Unknown', // Use 'Unknown' if weatherIcon is null
-                    style: TextStyle(fontSize: 126.sp),
-                  ),
-                  Text(
-                    '$temperature°C',
-                    style: TextStyle(
-                      color: Colors.white60,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text('${cityName is String ? cityName : 'Invalid City Name'}',
+                    style: kTextStyle10),
+                Text(
+                  weatherIcon ??
+                      'Unknown', // Use 'Unknown' if weatherIcon is null
+                  style: TextStyle(
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 90.sp,
-                    ),
+                      fontSize: MediaQuery.of(context).size.height * 0.15),
+                ),
+                Text(
+                  '$temperature°C',
+                  style: TextStyle(
+                    color: Colors.white60,
+                    fontWeight: FontWeight.bold,
+                    fontSize: MediaQuery.of(context).size.height * 0.15,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 6.h, horizontal: 15.w),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white24),
+                      child: Text('$description', style: kTextStyle1),
+                    ),
+                    SizedBox(width: 10.w),
+                    Text('H:$tempMax° L:$tempMin°', style: kTextStyle1)
+                  ],
+                ),
+                SizedBox(height: 10.h),
+                IntrinsicHeight(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 6.h, horizontal: 15.w),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white24),
-                        child: Text('$description', style: kTextStyle1),
+                      ConditionContent(
+                        icon: Icons.thermostat,
+                        condition: '$humidityForecast %',
+                        pressure: 'Humidity',
                       ),
-                      SizedBox(width: 10.w),
-                      Text('H:$tempMax° L:$tempMin°', style: kTextStyle1)
+                      const VerticalDivider(
+                        width: 1,
+                        color: Colors.white30,
+                        thickness: 3,
+                        indent: 15,
+                        endIndent: 15,
+                      ),
+                      ConditionContent(
+                        icon: Icons.wind_power,
+                        condition: '$windForecast km/h',
+                        pressure: 'Wind',
+                      ),
+                      const VerticalDivider(
+                        width: 1,
+                        color: Colors.white30,
+                        thickness: 3,
+                        indent: 15,
+                        endIndent: 15,
+                      ),
+                      ConditionContent(
+                        icon: Icons.cloudy_snowing,
+                        condition: '$precipitation %',
+                        pressure: 'Precipitation',
+                      ),
                     ],
                   ),
-                  SizedBox(height: 10.h),
-                  IntrinsicHeight(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                ),
+                SizedBox(height: 10.h),
+                Container(
+                  height: 100.sp,
+                  padding: REdgeInsets.only(left: 10, top: 10, bottom: 10).r,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.r),
+                      color: Colors.black38),
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: hourlyData.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.w),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${hourlyData[index]['time']}',
+                              style: kTextStyle9,
+                            ),
+                            const SizedBox(height: 8.0),
+                            Icon(
+                              hourlyData[index]['icon'],
+                              size: 20.sp,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              '${hourlyData[index]['temperature']}°C',
+                              style: kTextStyle1,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 1.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      onPressed: () async {
+                        var weatherData = await weather.getLocationWeather();
+                        updateUI(weatherData);
+                      },
+                      icon: const Icon(
+                        Icons.location_on,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Row(
                       children: [
-                        ConditionContent(
-                          icon: Icons.thermostat,
-                          condition: '$humidityForecast %',
-                          pressure: 'Humidity',
+                        Text(
+                          '8 days weather forecast',
+                          style: kTextStyle1,
                         ),
-                        const VerticalDivider(
-                          width: 1,
-                          color: Colors.white30,
-                          thickness: 3,
-                          indent: 15,
-                          endIndent: 15,
-                        ),
-                        ConditionContent(
-                          icon: Icons.wind_power,
-                          condition: '$windForecast km/h',
-                          pressure: 'Wind',
-                        ),
-                        const VerticalDivider(
-                          width: 1,
-                          color: Colors.white30,
-                          thickness: 3,
-                          indent: 15,
-                          endIndent: 15,
-                        ),
-                        ConditionContent(
-                          icon: Icons.cloudy_snowing,
-                          condition: '$precipitation %',
-                          pressure: 'Precipitation',
+                        IconButton(
+                          onPressed: () {
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
+                              context: context,
+                              builder: (context) => const WeatherForecast(),
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                  SizedBox(height: 10.h),
-                  Container(
-                    height: 100.sp,
-                    padding: REdgeInsets.only(left: 10, top: 10, bottom: 10).r,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.r),
-                        color: Colors.black38),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: hourlyData.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.w),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '${hourlyData[index]['time']}',
-                                style: kTextStyle9,
-                              ),
-                              const SizedBox(height: 8.0),
-                              Icon(
-                                hourlyData[index]['icon'],
-                                size: 20.sp,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(height: 8.0),
-                              Text(
-                                '${hourlyData[index]['temperature']}°C',
-                                style: kTextStyle1,
-                              ),
-                            ],
-                          ),
+                    IconButton(
+                      onPressed: () async {
+                        var selectedCityWeather = await showModalBottomSheet(
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          context: context,
+                          builder: (context) => const SearchCity(),
                         );
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 1.h),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        onPressed: () async {
-                          var weatherData = await weather.getLocationWeather();
-                          updateUI(weatherData);
-                        },
-                        icon: const Icon(
-                          Icons.location_on,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            '8 days weather forecast',
-                            style: kTextStyle1,
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              showModalBottomSheet(
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                context: context,
-                                builder: (context) => const WeatherForecast(),
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          var selectedCityWeather = await showModalBottomSheet(
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            context: context,
-                            builder: (context) => const SearchCity(),
-                          );
 
-                          if (selectedCityWeather != null) {
-                            updateUI(selectedCityWeather);
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.location_city,
-                          color: Colors.white,
-                        ),
+                        if (selectedCityWeather != null) {
+                          updateUI(selectedCityWeather);
+                        }
+                      },
+                      icon: const Icon(
+                        Icons.location_city,
+                        color: Colors.white,
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
